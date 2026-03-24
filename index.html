@@ -633,13 +633,12 @@ let isTranslating = false;
     document.getElementById('ghStatus').textContent = '저장됨 ✓';
   }
   const savedGhRepo = localStorage.getItem('gh_repo');
-  if (savedGhRepo) document.getElementById('ghRepoInput').value = savedGhRepo;
-
-  const savedWords = localStorage.getItem('flashcard_words');
-  if (savedWords) {
-    try { words = JSON.parse(savedWords); } catch(e) { words = []; }
+  if (savedGhRepo) {
+    document.getElementById('ghRepoInput').value = savedGhRepo;
+    loadWordsFromGitHub(savedGhRepo, savedGhToken);
+  } else {
+    renderWordList();
   }
-  renderWordList();
 })();
 
 // ─── API Key ──────────────────────────────────────────────────
@@ -929,8 +928,67 @@ function clearAll() {
 }
 
 function saveWords() {
-  localStorage.setItem('flashcard_words', JSON.stringify(words));
-  // 저장 후 new 뱃지 제거는 하지 않음 (새로 추가된 것 표시 유지)
+  // GitHub에 자동 저장
+  const token = localStorage.getItem('gh_token');
+  const repo = localStorage.getItem('gh_repo');
+  if (token && repo) {
+    pushWordsToGitHub(token, repo);
+  }
+}
+
+async function loadWordsFromGitHub(repo, token) {
+  if (!repo || !token) { renderWordList(); return; }
+  showStatus('ghSettingStatus', 'info', '☁️ 단어장 불러오는 중...');
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}/contents/words.json`, {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (res.status === 404) {
+      showStatus('ghSettingStatus', 'info', '☁️ 저장된 단어장 없음 — 새로 시작해요');
+      renderWordList();
+      return;
+    }
+    if (!res.ok) throw new Error('불러오기 실패');
+    const data = await res.json();
+    const decoded = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+    words = JSON.parse(decoded);
+    renderWordList();
+    showStatus('ghSettingStatus', 'success', `✅ ${words.length}개 단어 불러왔어요`);
+  } catch(e) {
+    showStatus('ghSettingStatus', 'error', '❌ 불러오기 실패: ' + e.message);
+    renderWordList();
+  }
+}
+
+async function pushWordsToGitHub(token, repo) {
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(words, null, 2))));
+    const apiUrl = `https://api.github.com/repos/${repo}/contents/words.json`;
+
+    let sha = null;
+    try {
+      const checkRes = await fetch(apiUrl, {
+        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (checkRes.ok) { sha = (await checkRes.json()).sha; }
+    } catch(e) {}
+
+    await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: 'Update words',
+        content,
+        ...(sha ? { sha } : {})
+      })
+    });
+  } catch(e) {
+    console.error('단어 저장 실패:', e);
+  }
 }
 
 // ─── Download child file ──────────────────────────────────────
@@ -941,6 +999,15 @@ function saveGhToken() {
   localStorage.setItem('gh_token', token);
   document.getElementById('ghStatus').textContent = '저장됨 ✓';
   showToast('✅ GitHub 토큰 저장됨');
+}
+
+function saveGhRepo() {
+  const repo = document.getElementById('ghRepoInput').value.trim();
+  const token = localStorage.getItem('gh_token');
+  if (!repo) return;
+  localStorage.setItem('gh_repo', repo);
+  loadWordsFromGitHub(repo, token);
+  showToast('✅ 저장소 저장됨 — 단어장 불러오는 중...');
 }
 
 async function deployToGitHub() {
