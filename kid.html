@@ -70,7 +70,7 @@ header h1{font-size:16px;font-weight:700}
 <header>
   <span style="font-size:20px">📖</span>
   <h1>영어 플래시카드</h1>
-  <span style="margin-left:auto;font-size:12px;color:var(--sub)">7개 단어</span>
+  <span style="margin-left:auto;font-size:12px;color:var(--sub)">13개 단어</span>
 </header>
 
 <div class="tabs">
@@ -84,7 +84,7 @@ header h1{font-size:16px;font-weight:700}
 <div id="quiz" class="panel"></div>
 
 <script>
-const WORDS = [{"en":"Cranked up","ko":"세게 돌려진","isNew":true},{"en":"Hoist","ko":"승강 장치","isNew":true},{"en":"Barge","ko":"바지선","isNew":true},{"en":"Reef","ko":"암초","isNew":true},{"en":"Kept boards from saving sailors","ko":"보트들이 선월 구하지 못하게 했다","isNew":true},{"en":"as well as","ko":"~뿐만 아니라","isNew":true},{"en":"contain","ko":"~을 함유하다, ~이 들어있다","isNew":true}];
+const WORDS = [{"en":"Cranked up","ko":"세게 돌려진","isNew":true},{"en":"Hoist","ko":"승강 장치","isNew":true},{"en":"Barge","ko":"바지선","isNew":true},{"en":"Reef","ko":"암초","isNew":true},{"en":"as well as","ko":"~뿐만 아니라","isNew":true},{"en":"contain","ko":"~을 함유하다, ~이 들어있다","isNew":true},{"en":"electrical","ko":"전기의","isNew":true},{"en":"load","ko":"화물","isNew":true},{"en":"avoid","ko":"피하다","isNew":true},{"en":"Traffic jams","ko":"교통 체증","isNew":true},{"en":"criminal","ko":"범죄자","isNew":true},{"en":"crook","ko":"사기꾼","isNew":true},{"en":"Mission accomplished","ko":"임무가 완료되었다","isNew":true}];
 let flashIdx = 0, flashMode = 'en-ko';
 let spellIdx = 0, spellScore = 0, spellTotal = 0;
 let quizIdx = 0, quizScore = 0;
