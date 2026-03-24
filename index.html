@@ -570,18 +570,44 @@
     </div>
   </div>
 
-  <!-- Download -->
-  <div class="download-section">
-    <h3>📱 아이용 오프라인 파일 만들기</h3>
-    <p>단어 추가가 끝나면 아이 아이폰용 플래시카드 파일을 다운로드하세요</p>
-    <button class="download-btn" onclick="downloadChildFile()">
-      ⬇️ 아이용 파일 다운로드
-    </button>
-    <div class="download-steps">
-      1. 다운로드 후 AirDrop 또는 iCloud로 아이 아이폰에 전송<br>
-      2. 파일 앱에서 열기 → 사파리로 열림<br>
-      3. 공유 버튼 → "홈 화면에 추가" 하면 앱처럼 사용 가능!
+  <!-- GitHub Settings -->
+  <div class="section">
+    <div class="section-header">
+      <span class="num">4</span>
+      GitHub 배포 설정
     </div>
+    <div class="section-body">
+      <div class="api-row">
+        <input type="password" class="api-input" id="ghTokenInput" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+        <span class="api-status" id="ghStatus"></span>
+        <button class="btn btn-outline btn-sm" onclick="saveGhToken()">저장</button>
+      </div>
+      <p class="api-hint">
+        GitHub Personal Access Token (repo 권한 필요)<br>
+        발급: <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a>
+        → repo 체크 → Generate token
+      </p>
+      <div style="margin-top:10px">
+        <input type="text" class="api-input" id="ghRepoInput" placeholder="bulepanic-pixel/flashcards" style="font-family:inherit;font-size:13px;width:100%">
+        <p class="api-hint" style="margin-top:4px">저장소 (username/repository 형식)</p>
+      </div>
+      <div id="ghSettingStatus" class="status-msg"></div>
+    </div>
+  </div>
+
+  <!-- Deploy -->
+  <div class="download-section">
+    <h3>📱 아이용 페이지 배포</h3>
+    <p>버튼 하나로 GitHub에 바로 올라가요!</p>
+    <button class="download-btn" onclick="deployToGitHub()" id="deployBtn">
+      🚀 GitHub에 바로 배포
+    </button>
+    <div style="margin-top:10px">
+      <button class="download-btn" onclick="downloadChildFile()" style="background:rgba(255,255,255,0.15);color:white;font-size:13px;padding:8px 18px">
+        ⬇️ 파일로 다운로드 (기존 방식)
+      </button>
+    </div>
+    <div class="download-steps" id="deployResult"></div>
   </div>
 
 </div>
@@ -601,6 +627,14 @@ let isTranslating = false;
     document.getElementById('apiKeyInput').value = savedKey;
     document.getElementById('apiStatus').textContent = '저장됨 ✓';
   }
+  const savedGhToken = localStorage.getItem('gh_token');
+  if (savedGhToken) {
+    document.getElementById('ghTokenInput').value = savedGhToken;
+    document.getElementById('ghStatus').textContent = '저장됨 ✓';
+  }
+  const savedGhRepo = localStorage.getItem('gh_repo');
+  if (savedGhRepo) document.getElementById('ghRepoInput').value = savedGhRepo;
+
   const savedWords = localStorage.getItem('flashcard_words');
   if (savedWords) {
     try { words = JSON.parse(savedWords); } catch(e) { words = []; }
@@ -900,6 +934,77 @@ function saveWords() {
 }
 
 // ─── Download child file ──────────────────────────────────────
+// ─── GitHub Deploy ────────────────────────────────────────────
+function saveGhToken() {
+  const token = document.getElementById('ghTokenInput').value.trim();
+  if (!token) return;
+  localStorage.setItem('gh_token', token);
+  document.getElementById('ghStatus').textContent = '저장됨 ✓';
+  showToast('✅ GitHub 토큰 저장됨');
+}
+
+async function deployToGitHub() {
+  const token = localStorage.getItem('gh_token') || document.getElementById('ghTokenInput').value.trim();
+  const repo = document.getElementById('ghRepoInput').value.trim() || localStorage.getItem('gh_repo') || '';
+
+  if (!token) { showToast('⚠️ GitHub 토큰을 입력해주세요'); return; }
+  if (!repo) { showToast('⚠️ 저장소를 입력해주세요 (예: username/flashcards)'); return; }
+  if (words.length === 0) { showToast('⚠️ 단어를 먼저 추가해주세요'); return; }
+
+  localStorage.setItem('gh_repo', repo);
+
+  const btn = document.getElementById('deployBtn');
+  const result = document.getElementById('deployResult');
+  btn.textContent = '⏳ 배포 중...';
+  btn.disabled = true;
+  result.textContent = '';
+
+  try {
+    const html = generateChildHtml(words);
+    const base64Content = btoa(unescape(encodeURIComponent(html)));
+    const apiUrl = `https://api.github.com/repos/${repo}/contents/kid.html`;
+
+    let sha = null;
+    try {
+      const checkRes = await fetch(apiUrl, {
+        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (checkRes.ok) { sha = (await checkRes.json()).sha; }
+    } catch(e) {}
+
+    const res = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Update kid.html (${new Date().toLocaleDateString('ko-KR')})`,
+        content: base64Content,
+        ...(sha ? { sha } : {})
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || `HTTP ${res.status}`);
+    }
+
+    const [user, repoName] = repo.split('/');
+    const url = `https://${user}.github.io/${repoName}/kid.html`;
+    result.innerHTML = `✅ 배포 완료! 1~2분 후 반영돼요<br>아이용 URL: <a href="${url}" target="_blank" style="color:#93c5fd;word-break:break-all">${url}</a>`;
+    showToast('🚀 배포 완료!');
+
+  } catch(err) {
+    result.innerHTML = `❌ 오류: ${err.message}`;
+    showToast('❌ 배포 실패');
+  } finally {
+    btn.textContent = '🚀 GitHub에 바로 배포';
+    btn.disabled = false;
+  }
+}
+
 function downloadChildFile() {
   if (words.length === 0) {
     showToast('⚠️ 단어를 먼저 추가해주세요');
