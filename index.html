@@ -7,601 +7,1229 @@
 <meta name="apple-mobile-web-app-title" content="단어설정">
 <title>영어 단어장 — 부모 설정</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@700;800;900&display=swap');
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#F5F2ED;--surface:#FFF;--border:#E2DDD6;
-  --text:#1C1917;--text2:#78716C;--text3:#A8A29E;
-  --accent:#4A6FA5;--accent-bg:#EEF3FA;
-  --green:#2D7A5F;--green-bg:#E8F5EF;
-  --red:#B91C1C;--red-bg:#FEF2F2;
-  --orange:#C2610C;--orange-bg:#FFF7ED;
-  --r:14px;
-}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:48px;-webkit-tap-highlight-color:transparent;}
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px 14px;position:sticky;top:0;z-index:20;}
-.topbar-title{font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;color:var(--accent);}
-.topbar-title span{color:var(--orange);}
-.topbar-sub{font-size:12px;color:var(--text2);margin-top:2px;}
-.wrap{padding:14px;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px;}
-.card-title{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.step{width:22px;height:22px;background:var(--accent);color:white;border-radius:50%;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
 
-/* API KEY */
-.apikey-row{display:flex;gap:8px;align-items:center;}
-.apikey-row input{flex:1;border:1px solid var(--border);border-radius:10px;padding:11px 12px;font-size:13px;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);}
-.apikey-row input:focus{outline:none;border-color:var(--accent);}
-.apikey-hint{font-size:12px;color:var(--text2);margin-top:6px;line-height:1.6;}
-.apikey-hint a{color:var(--accent);}
-.key-saved{display:inline-block;font-size:11px;background:var(--green-bg);color:var(--green);border-radius:999px;padding:2px 8px;font-weight:700;margin-left:6px;}
+  :root {
+    --bg: #f5f4f0;
+    --card: #ffffff;
+    --border: #e2e0d8;
+    --text: #1a1917;
+    --sub: #6b6860;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --green: #16a34a;
+    --green-light: #f0fdf4;
+    --red: #dc2626;
+    --red-light: #fef2f2;
+    --yellow: #d97706;
+    --yellow-light: #fffbeb;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+  }
 
-/* CAPTURE */
-.capture-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.capture-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 10px;background:var(--bg);border:1.5px dashed var(--border);border-radius:12px;cursor:pointer;transition:all 0.15s;}
-.capture-btn:active{transform:scale(0.95);border-color:var(--accent);}
-.cb-icon{font-size:32px;}
-.cb-label{font-size:13px;font-weight:500;color:var(--text);}
-.cb-sub{font-size:11px;color:var(--text2);}
-#camInput,#galInput{display:none;}
-#previewWrap{display:none;margin-bottom:12px;}
-#previewImg{width:100%;border-radius:10px;max-height:240px;object-fit:cover;}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.status-box{border-radius:10px;padding:11px 14px;font-size:13px;line-height:1.6;display:none;margin-bottom:12px;}
-.status-box.loading{display:block;background:var(--accent-bg);color:var(--accent);}
-.status-box.ok{display:block;background:var(--green-bg);color:var(--green);}
-.status-box.err{display:block;background:var(--red-bg);color:var(--red);}
-.spin{display:inline-block;animation:spin 0.7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
 
-.edit-wrap{display:none;}
-.edit-label{font-size:12px;color:var(--text2);margin-bottom:6px;}
-textarea{width:100%;border:1px solid var(--border);border-radius:10px;padding:11px 12px;font-size:13px;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);resize:vertical;min-height:130px;line-height:1.9;}
-textarea:focus{outline:none;border-color:var(--accent);}
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-/* MANUAL */
-.manual-row{display:flex;gap:8px;align-items:flex-start;}
-.manual-row input{flex:1;border:1px solid var(--border);border-radius:10px;padding:11px 12px;font-size:14px;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);}
-.manual-row input:focus{outline:none;border-color:var(--accent);}
-.manual-row input::placeholder{color:var(--text3);}
-.ko-wrap{flex:1;position:relative;}
-.ko-wrap input{width:100%;}
-.ko-loading{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text3);}
-.auto-badge{display:inline-block;font-size:10px;background:var(--accent-bg);color:var(--accent);border-radius:999px;padding:2px 7px;font-weight:700;margin-left:6px;vertical-align:middle;}
+  header h1 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
 
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;font-weight:500;cursor:pointer;transition:all 0.15s;}
-.btn:active{transform:scale(0.95);}
-.btn-p{background:var(--accent);color:white;border-color:var(--accent);}
-.btn-g{background:var(--green);color:white;border-color:var(--green);}
-.btn-sm{padding:8px 14px;font-size:13px;border-radius:9px;}
-.btn-d{border-color:var(--red);color:var(--red);}
-.btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  header .badge {
+    font-size: 11px;
+    background: var(--accent);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
 
-/* WORD LIST */
-.list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.count-pill{background:var(--accent);color:white;font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;padding:3px 12px;border-radius:999px;}
-.word-list{border-top:1px solid var(--border);}
-.word-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
-.word-row:last-child{border-bottom:none;}
-.w-en{font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--accent);min-width:120px;}
-.w-ko{font-size:14px;color:var(--text2);flex:1;}
-.w-del{font-size:13px;color:var(--text3);cursor:pointer;padding:4px 8px;border-radius:6px;transition:all 0.15s;}
-.w-del:active{background:var(--red-bg);color:var(--red);}
-.new-badge{font-size:10px;font-weight:700;background:var(--orange-bg);color:var(--orange);border-radius:999px;padding:2px 7px;margin-left:4px;vertical-align:middle;}
-.empty{text-align:center;padding:28px;color:var(--text3);font-size:14px;}
+  .container { max-width: 600px; margin: 0 auto; padding: 20px 16px; }
 
-/* DOWNLOAD */
-.dl-box{background:linear-gradient(135deg,var(--accent-bg),var(--green-bg));border:1.5px solid var(--accent);border-radius:var(--r);padding:22px;text-align:center;margin-bottom:14px;}
-.dl-box h3{font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;margin-bottom:6px;}
-.dl-box p{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.7;}
-.steps{text-align:left;margin-top:16px;}
-.steps li{list-style:none;font-size:13px;color:var(--text2);padding:5px 0 5px 28px;position:relative;line-height:1.5;border-bottom:1px solid var(--border);}
-.steps li:last-child{border-bottom:none;}
-.steps li::before{content:attr(data-n);position:absolute;left:0;width:20px;height:20px;background:var(--accent);color:white;border-radius:50%;font-size:11px;font-weight:700;font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;top:6px;}
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .section-header {
+    padding: 14px 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--sub);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .section-header .num {
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .section-body { padding: 16px; }
+
+  /* API Key */
+  .api-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .api-input {
+    flex: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+  }
+
+  .api-input:focus { border-color: var(--accent); }
+
+  .api-status {
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .api-hint {
+    font-size: 11px;
+    color: var(--sub);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  .api-hint a { color: var(--accent); text-decoration: none; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn:active { transform: scale(0.97); }
+
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #1d4ed8; }
+
+  .btn-outline {
+    background: white;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .btn-outline:hover { background: var(--bg); }
+
+  .btn-green { background: var(--green); color: white; }
+  .btn-green:hover { background: #15803d; }
+
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+
+  .btn-block { width: 100%; justify-content: center; }
+
+  /* Camera section */
+  .camera-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  input[type="file"] { display: none; }
+
+  .preview-wrap {
+    display: none;
+    margin-top: 12px;
+  }
+
+  .preview-wrap img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .extract-result {
+    margin-top: 12px;
+    display: none;
+  }
+
+  .extract-result-header {
+    font-size: 12px;
+    color: var(--sub);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .word-chips { display: flex; flex-direction: column; gap: 6px; }
+
+  .word-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--accent-light);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .word-chip .en { font-weight: 600; font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
+  .word-chip .sep { color: var(--sub); flex-shrink: 0; }
+  .word-chip .ko { color: var(--sub); flex: 1; }
+
+  .word-chip .chip-del {
+    background: none;
+    border: none;
+    color: var(--red);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 2px;
+    flex-shrink: 0;
+  }
+
+  .chip-add-btn {
+    margin-top: 10px;
+  }
+
+  /* Manual input */
+  .manual-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .manual-fields {
+    display: flex;
+    flex: 1;
+    gap: 8px;
+  }
+
+  .input-wrap {
+    position: relative;
+    flex: 1;
+  }
+
+  .input-wrap input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    background: var(--bg);
+    outline: none;
+    color: var(--text);
+    transition: border-color 0.15s;
+  }
+
+  .input-wrap input:focus { border-color: var(--accent); }
+
+  .input-wrap input.loading {
+    background: var(--yellow-light);
+    border-color: var(--yellow);
+  }
+
+  .input-wrap .auto-badge {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    background: var(--green);
+    color: white;
+    padding: 1px 5px;
+    border-radius: 4px;
+    display: none;
+  }
+
+  /* Word list */
+  .wordlist-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .wordlist-count {
+    font-size: 13px;
+    color: var(--sub);
+  }
+
+  .wordlist-count strong { color: var(--accent); }
+
+  .word-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .word-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--sub);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .word-table td {
+    padding: 8px 8px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    vertical-align: middle;
+  }
+
+  .word-table tr:last-child td { border-bottom: none; }
+
+  .word-table tr:hover td { background: var(--bg); }
+
+  .word-table .en-col {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .word-table .new-badge {
+    display: inline-block;
+    font-size: 9px;
+    background: var(--accent);
+    color: white;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: 6px;
+    font-family: inherit;
+    font-weight: 700;
+    vertical-align: middle;
+  }
+
+  .del-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: color 0.1s;
+  }
+
+  .del-btn:hover { color: var(--red); }
+
+  .empty-state {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--sub);
+    font-size: 14px;
+  }
+
+  /* Download section */
+  .download-section {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: white;
+    margin-top: 8px;
+  }
+
+  .download-section h3 { font-size: 16px; margin-bottom: 6px; }
+  .download-section p { font-size: 13px; opacity: 0.8; margin-bottom: 16px; }
+
+  .download-btn {
+    background: white;
+    color: #1d4ed8;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .download-btn:hover { background: #eff6ff; }
+
+  .download-steps {
+    margin-top: 14px;
+    text-align: left;
+    font-size: 12px;
+    opacity: 0.8;
+    line-height: 1.8;
+  }
+
+  /* Loading spinner */
+  .spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(0,0,0,0.1);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1a1917;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 9999;
+    transition: transform 0.25s ease;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Status messages */
+  .status-msg {
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    display: none;
+  }
+
+  .status-msg.error { background: var(--red-light); color: var(--red); display: block; }
+  .status-msg.success { background: var(--green-light); color: var(--green); display: block; }
+  .status-msg.info { background: var(--accent-light); color: var(--accent); display: block; }
+
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="topbar-title">Flash<span>Cards</span> ✏️</div>
-  <div class="topbar-sub">부모 설정 도구 — 단어를 추가하고 아이용 파일을 만드세요</div>
+
+<header>
+  <span style="font-size:20px">📚</span>
+  <h1>영어 단어장 설정</h1>
+  <span class="badge">부모용</span>
+</header>
+
+<div class="container">
+
+  <!-- API Key -->
+  <div class="section">
+    <div class="section-header">
+      <span class="num">🔑</span>
+      Anthropic API 키
+    </div>
+    <div class="section-body">
+      <div class="api-row">
+        <input type="password" class="api-input" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off">
+        <span class="api-status" id="apiStatus"></span>
+        <button class="btn btn-outline btn-sm" onclick="saveApiKey()">저장</button>
+      </div>
+      <p class="api-hint">
+        이 기기에만 저장돼요 (localStorage). 외부로 전송되지 않아요.<br>
+        키 발급: <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Camera / Photo -->
+  <div class="section">
+    <div class="section-header">
+      <span class="num">1</span>
+      숙제 사진으로 단어 추출 (AI)
+    </div>
+    <div class="section-body">
+      <div class="camera-btns">
+        <button class="btn btn-outline btn-block" onclick="document.getElementById('cameraInput').click()">
+          📷 카메라로 찍기
+        </button>
+        <button class="btn btn-outline btn-block" onclick="document.getElementById('galleryInput').click()">
+          🖼️ 앨범에서 선택
+        </button>
+      </div>
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleImage(event)">
+      <input type="file" id="galleryInput" accept="image/*" onchange="handleImage(event)">
+
+      <div class="preview-wrap" id="previewWrap">
+        <img id="previewImg" src="" alt="미리보기">
+      </div>
+
+      <div id="extractStatus" class="status-msg"></div>
+
+      <div class="extract-result" id="extractResult">
+        <div class="extract-result-header">AI가 추출한 단어 — 확인 후 추가</div>
+        <div class="word-chips" id="extractedChips"></div>
+        <button class="btn btn-green btn-sm chip-add-btn" onclick="addAllExtracted()">
+          ✓ 전체 단어장에 추가
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Input -->
+  <div class="section">
+    <div class="section-header">
+      <span class="num">2</span>
+      단어 직접 입력
+    </div>
+    <div class="section-body">
+      <div class="manual-row">
+        <div class="manual-fields">
+          <div class="input-wrap">
+            <input type="text" id="manualEn" placeholder="영어 단어"
+              onblur="autoTranslate()"
+              onkeydown="if(event.key==='Tab'){event.preventDefault();autoTranslate()}"
+            >
+          </div>
+          <div class="input-wrap">
+            <input type="text" id="manualKo" placeholder="한글 뜻 (자동입력)">
+            <span class="auto-badge" id="autoBadge">자동</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="addManualWord()">추가</button>
+      </div>
+      <div id="manualStatus" class="status-msg"></div>
+      <p style="font-size:12px;color:var(--sub);margin-top:8px;">
+        💡 영어 단어 입력 후 Tab 또는 다른 곳 탭하면 AI가 한글 뜻을 자동으로 채워줘요
+      </p>
+    </div>
+  </div>
+
+  <!-- Word List -->
+  <div class="section">
+    <div class="section-header">
+      <span class="num">3</span>
+      저장된 단어장
+    </div>
+    <div class="section-body">
+      <div class="wordlist-header">
+        <span class="wordlist-count">총 <strong id="wordCount">0</strong>개</span>
+        <button class="btn btn-outline btn-sm" onclick="clearAll()" style="color:var(--red);">전체 삭제</button>
+      </div>
+      <div id="wordListWrap">
+        <div class="empty-state">아직 단어가 없어요<br>위에서 추가해보세요 😊</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Download -->
+  <div class="download-section">
+    <h3>📱 아이용 오프라인 파일 만들기</h3>
+    <p>단어 추가가 끝나면 아이 아이폰용 플래시카드 파일을 다운로드하세요</p>
+    <button class="download-btn" onclick="downloadChildFile()">
+      ⬇️ 아이용 파일 다운로드
+    </button>
+    <div class="download-steps">
+      1. 다운로드 후 AirDrop 또는 iCloud로 아이 아이폰에 전송<br>
+      2. 파일 앱에서 열기 → 사파리로 열림<br>
+      3. 공유 버튼 → "홈 화면에 추가" 하면 앱처럼 사용 가능!
+    </div>
+  </div>
+
 </div>
-<div class="wrap">
 
-  <!-- API KEY -->
-  <div class="card">
-    <div class="card-title">
-      <div class="step">🔑</div>
-      Anthropic API 키 입력
-      <span id="keySavedBadge" class="key-saved" style="display:none">저장됨 ✓</span>
-    </div>
-    <div class="apikey-row">
-      <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." oninput="onKeyInput()">
-      <button class="btn btn-p btn-sm" onclick="saveKey()">저장</button>
-    </div>
-    <div class="apikey-hint">
-      API 키는 이 기기에만 저장돼요 (localStorage). 외부로 전송되지 않아요.<br>
-      키 발급: <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>
-    </div>
-  </div>
-
-  <!-- STEP 1 -->
-  <div class="card">
-    <div class="card-title"><div class="step">1</div> 숙제 사진으로 단어 추출 (AI)</div>
-    <div class="capture-grid">
-      <div class="capture-btn" onclick="document.getElementById('camInput').click()">
-        <div class="cb-icon">📷</div>
-        <div class="cb-label">카메라로 찍기</div>
-        <div class="cb-sub">지금 바로 촬영</div>
-      </div>
-      <div class="capture-btn" onclick="document.getElementById('galInput').click()">
-        <div class="cb-icon">🖼️</div>
-        <div class="cb-label">앨범에서 선택</div>
-        <div class="cb-sub">저장된 사진 불러오기</div>
-      </div>
-    </div>
-    <input type="file" id="camInput" accept="image/*" capture="environment" onchange="handleImage(event)">
-    <input type="file" id="galInput" accept="image/*" onchange="handleImage(event)">
-    <div id="previewWrap"><img id="previewImg"></div>
-    <div id="statusBox" class="status-box"></div>
-    <div id="editWrap" class="edit-wrap">
-      <div class="edit-label">AI가 추출한 단어 목록 — 수정 후 추가하세요 ("영어: 한국어" 형식)</div>
-      <textarea id="extractedText" placeholder="apple: 사과&#10;happy: 행복한&#10;run: 달리다"></textarea>
-      <div class="btn-row">
-        <button class="btn btn-p" onclick="parseAndAdd()">✓ 단어장에 추가</button>
-        <button class="btn btn-sm" onclick="document.getElementById('editWrap').style.display='none'">취소</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 2 -->
-  <div class="card">
-    <div class="card-title">
-      <div class="step">2</div> 단어 직접 입력
-      <span class="auto-badge">뜻 자동 입력</span>
-    </div>
-    <div class="manual-row">
-      <input type="text" id="mEn" placeholder="영어 (예: apple)"
-        onkeydown="if(event.key==='Tab'){event.preventDefault();triggerAutoTranslate();}"
-        onblur="triggerAutoTranslate()">
-      <div class="ko-wrap">
-        <input type="text" id="mKo" placeholder="한글 뜻 (자동 입력)" onkeydown="if(event.key==='Enter')addManual()">
-        <span class="ko-loading" id="koLoading" style="display:none">⏳</span>
-      </div>
-      <button class="btn btn-p btn-sm" onclick="addManual()">추가</button>
-    </div>
-  </div>
-
-  <!-- STEP 3 -->
-  <div class="card">
-    <div class="list-header">
-      <div class="card-title" style="margin-bottom:0"><div class="step">3</div> 저장된 단어장</div>
-      <span class="count-pill" id="countPill">0개</span>
-    </div>
-    <div id="wordList"></div>
-    <div style="display:flex;justify-content:flex-end;margin-top:10px;" id="clearWrap"></div>
-  </div>
-
-  <!-- STEP 4 -->
-  <div class="dl-box">
-    <h3>📱 아이용 파일 만들기</h3>
-    <p>단어 추가가 끝나면 아래 버튼으로<br>아이폰 오프라인 플래시카드 파일을 받으세요.</p>
-    <button class="btn btn-g" onclick="download()" style="font-size:15px;padding:13px 28px;">⬇️ 아이용 파일 다운로드</button>
-    <ul class="steps">
-      <li data-n="1">위 버튼으로 HTML 파일 다운로드</li>
-      <li data-n="2">AirDrop 또는 iCloud로 아이 아이폰 전송</li>
-      <li data-n="3">아이 아이폰 파일 앱 → 파일 열기 (사파리로 열림)</li>
-      <li data-n="4">공유 버튼 → "홈 화면에 추가" 하면 앱처럼 사용!</li>
-    </ul>
-  </div>
-
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
-const KEY = 'fc_words_v2';
-const APIKEY_STORE = 'fc_apikey';
+// ─── State ───────────────────────────────────────────────────
 let words = [];
-let newSet = new Set();
+let extractedWords = [];
+let isTranslating = false;
 
-try { words = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { words = []; }
-
-// API 키 로드
-const savedKey = localStorage.getItem(APIKEY_STORE) || '';
-if(savedKey) {
-  document.getElementById('apiKeyInput').value = savedKey;
-  document.getElementById('keySavedBadge').style.display = 'inline-block';
-}
-
-function onKeyInput() {
-  document.getElementById('keySavedBadge').style.display = 'none';
-}
-function saveKey() {
-  const k = document.getElementById('apiKeyInput').value.trim();
-  if(!k.startsWith('sk-ant-')) { alert('올바른 API 키 형식이 아니에요.\nsk-ant-... 로 시작해야 해요.'); return; }
-  localStorage.setItem(APIKEY_STORE, k);
-  document.getElementById('keySavedBadge').style.display = 'inline-block';
-}
-function getKey() { return document.getElementById('apiKeyInput').value.trim(); }
-
-function save() { try { localStorage.setItem(KEY, JSON.stringify(words)); } catch(e) {} }
-
-function renderList() {
-  const el = document.getElementById('wordList');
-  const pill = document.getElementById('countPill');
-  const cw = document.getElementById('clearWrap');
-  pill.textContent = words.length + '개';
-  cw.innerHTML = words.length > 0 ? '<button class="btn btn-sm btn-d" onclick="clearAll()">전체 삭제</button>' : '';
-  if(!words.length) { el.innerHTML = '<div class="empty">아직 단어가 없어요</div>'; return; }
-  el.innerHTML = '<div class="word-list">' + words.map((w, i) => `
-    <div class="word-row">
-      <span class="w-en">${w.en}${newSet.has(w.en) ? '<span class="new-badge">NEW</span>' : ''}</span>
-      <span class="w-ko">${w.ko}</span>
-      <span class="w-del" onclick="delWord(${i})">✕</span>
-    </div>`).join('') + '</div>';
-}
-
-function delWord(i) { newSet.delete(words[i].en); words.splice(i, 1); save(); renderList(); }
-function clearAll() {
-  if(confirm('모든 단어를 삭제할까요?\n삭제하면 복구되지 않아요.')) {
-    words = []; newSet.clear(); save(); renderList();
+// ─── Init ─────────────────────────────────────────────────────
+(function init() {
+  const savedKey = localStorage.getItem('anthropic_api_key');
+  if (savedKey) {
+    document.getElementById('apiKeyInput').value = savedKey;
+    document.getElementById('apiStatus').textContent = '저장됨 ✓';
   }
-}
-
-let lastTranslatedWord = '';
-async function triggerAutoTranslate() {
-  const en = document.getElementById('mEn').value.trim().toLowerCase();
-  const koInput = document.getElementById('mKo');
-  const loader = document.getElementById('koLoading');
-  if(!en || en === lastTranslatedWord) { document.getElementById('mKo').focus(); return; }
-  const apiKey = getKey();
-  if(!apiKey) { document.getElementById('mKo').focus(); return; }
-  lastTranslatedWord = en;
-  loader.style.display = 'inline';
-  koInput.placeholder = '뜻 불러오는 중...';
-  koInput.value = '';
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 50,
-        messages: [{
-          role: 'user',
-          content: `초등학생 영어 교육용으로 "${en}"의 가장 대표적인 한국어 뜻 하나만 답하세요. 단어 하나 또는 짧은 구만 답하고 다른 설명은 절대 하지 마세요. 예: 사과 / 행복한 / 달리다`
-        }]
-      })
-    });
-    const data = await res.json();
-    const ko = (data.content?.[0]?.text || '').trim();
-    koInput.value = ko;
-    koInput.placeholder = '한글 뜻 (수정 가능)';
-    koInput.focus();
-    koInput.select();
-  } catch(e) {
-    koInput.placeholder = '뜻을 직접 입력하세요';
-  } finally {
-    loader.style.display = 'none';
+  const savedWords = localStorage.getItem('flashcard_words');
+  if (savedWords) {
+    try { words = JSON.parse(savedWords); } catch(e) { words = []; }
   }
-}
+  renderWordList();
+})();
 
-function addManual() {
-  const en = document.getElementById('mEn').value.trim().toLowerCase();
-  const ko = document.getElementById('mKo').value.trim();
-  if(!en || !ko) { alert('영어와 뜻을 모두 입력해 주세요'); return; }
-  if(words.find(w => w.en === en)) { alert('이미 있는 단어예요'); return; }
-  words.push({en, ko}); newSet.add(en); save(); renderList();
-  document.getElementById('mEn').value = '';
-  document.getElementById('mKo').value = '';
-  document.getElementById('mEn').focus();
-}
-
-function handleImage(e) {
-  const file = e.target.files[0];
-  if(!file) return;
-  e.target.value = '';
-  const reader = new FileReader();
-  reader.onload = async ev => {
-    document.getElementById('previewImg').src = ev.target.result;
-    document.getElementById('previewWrap').style.display = 'block';
-    await extractWords(ev.target.result);
-  };
-  reader.readAsDataURL(file);
-}
-
-async function extractWords(b64) {
-  const apiKey = getKey();
-  if(!apiKey) {
-    alert('먼저 상단에서 API 키를 입력하고 저장해 주세요!');
+// ─── API Key ──────────────────────────────────────────────────
+function saveApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key.startsWith('sk-ant')) {
+    showToast('⚠️ 올바른 API 키 형식이 아니에요');
     return;
   }
-  const sb = document.getElementById('statusBox');
-  const ew = document.getElementById('editWrap');
-  ew.style.display = 'none';
-  sb.className = 'status-box loading';
-  sb.innerHTML = '<span class="spin">⏳</span> AI가 단어를 분석하는 중...';
+  localStorage.setItem('anthropic_api_key', key);
+  document.getElementById('apiStatus').textContent = '저장됨 ✓';
+  showToast('✅ API 키가 저장됐어요');
+}
 
-  const base64 = b64.split(',')[1];
-  const mt = b64.split(';')[0].split(':')[1];
+function getApiKey() {
+  return localStorage.getItem('anthropic_api_key') || '';
+}
+
+// ─── Claude API call ──────────────────────────────────────────
+async function callClaude(messages, systemPrompt, maxTokens = 1024) {
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error('API 키를 먼저 입력하고 저장해주세요');
+
+  const body = {
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: maxTokens,
+    system: systemPrompt,
+    messages: messages
+  };
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify(body)
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    const errMsg = data?.error?.message || `HTTP ${res.status}`;
+    if (errMsg.includes('credit') || errMsg.includes('billing') || res.status === 429) {
+      throw new Error('크레딧이 부족해요. console.anthropic.com에서 충전해주세요.');
+    }
+    throw new Error(errMsg);
+  }
+
+  // 응답에서 텍스트 추출
+  const textBlock = data.content?.find(b => b.type === 'text');
+  if (!textBlock) throw new Error('API 응답에서 텍스트를 찾을 수 없어요');
+  return textBlock.text;
+}
+
+// ─── Auto Translate ───────────────────────────────────────────
+async function autoTranslate() {
+  const enInput = document.getElementById('manualEn');
+  const koInput = document.getElementById('manualKo');
+  const badge = document.getElementById('autoBadge');
+  const status = document.getElementById('manualStatus');
+
+  const word = enInput.value.trim();
+  if (!word || koInput.value.trim()) return; // 이미 뜻이 있으면 skip
+  if (isTranslating) return;
+  if (!getApiKey()) return;
+
+  isTranslating = true;
+  koInput.classList.add('loading');
+  koInput.placeholder = '번역 중...';
+  status.className = 'status-msg';
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1500,
-        messages: [{
-          role: 'user',
-          content: [
-            { type: 'image', source: { type: 'base64', media_type: mt, data: base64 } },
-            { type: 'text', text: `이 이미지는 초등학교 영어 숙제 프린트입니다.
-이미지에서 영어 단어와 한국어 뜻을 모두 찾아서 추출해 주세요.
-반드시 아래 형식으로만 답하세요. 다른 설명, 번호, 예문, 마크다운은 절대 포함하지 마세요:
-apple: 사과
-happy: 행복한
-단어가 없으면 "없음"이라고만 답하세요.` }
-          ]
-        }]
-      })
-    });
+    const text = await callClaude(
+      [{ role: 'user', content: `영어 단어: "${word}"` }],
+      `너는 영한 사전이야. 영어 단어를 받으면 초등학생이 이해할 수 있는 대표적인 한글 뜻만 짧게 답해.
+형식: 한글 뜻만 (예: "사과", "달리다", "행복한")
+뜻이 여러 개면 쉼표로 구분해서 최대 3개까지.
+다른 설명은 절대 추가하지 마.`,
+      100
+    );
 
-    const data = await res.json();
+    const translation = text.trim().replace(/^["']|["']$/g, '');
+    koInput.value = translation;
+    badge.style.display = 'block';
+    status.className = 'status-msg';
 
-    if(data.error) {
-      sb.className = 'status-box err';
-      sb.textContent = 'API 오류: ' + (data.error.message || '알 수 없는 오류');
-      return;
-    }
-
-    const text = (data.content?.[0]?.text || '').trim();
-    if(text === '없음' || !text.includes(':')) {
-      sb.className = 'status-box err';
-      sb.textContent = '단어를 찾지 못했어요. 사진을 더 선명하게 다시 찍어 주세요.';
-      return;
-    }
-
-    const cnt = text.split('\n').filter(l => l.includes(':')).length;
-    sb.className = 'status-box ok';
-    sb.textContent = `✓ ${cnt}개의 단어를 찾았어요! 아래에서 확인 후 추가하세요.`;
-    document.getElementById('extractedText').value = text;
-    ew.style.display = 'block';
-
-  } catch(err) {
-    sb.className = 'status-box err';
-    sb.textContent = '네트워크 오류가 발생했어요. 인터넷 연결을 확인해 주세요.\n(' + err.message + ')';
+  } catch (err) {
+    showStatus('manualStatus', 'error', '❌ ' + err.message);
+  } finally {
+    isTranslating = false;
+    koInput.classList.remove('loading');
+    koInput.placeholder = '한글 뜻';
   }
 }
 
-function parseAndAdd() {
-  const text = document.getElementById('extractedText').value;
-  const lines = text.split('\n').filter(l => l.includes(':'));
-  const newW = lines.map(l => {
-    const [en, ...r] = l.split(':');
-    return { en: en.trim().toLowerCase(), ko: r.join(':').trim() };
-  }).filter(w => w.en && w.ko);
-  if(!newW.length) { alert('올바른 형식이 아닙니다.\n예) apple: 사과'); return; }
-  let added = 0;
-  newW.forEach(nw => {
-    if(!words.find(w => w.en === nw.en)) { words.push(nw); newSet.add(nw.en); added++; }
-  });
-  save(); renderList();
-  document.getElementById('editWrap').style.display = 'none';
-  const sb = document.getElementById('statusBox');
-  sb.className = 'status-box ok';
-  sb.textContent = `✓ ${added}개 단어가 추가됐어요! (중복 제외)`;
+// ─── Manual Add ───────────────────────────────────────────────
+function addManualWord() {
+  const en = document.getElementById('manualEn').value.trim();
+  const ko = document.getElementById('manualKo').value.trim();
+  const badge = document.getElementById('autoBadge');
+
+  if (!en) { showToast('영어 단어를 입력해주세요'); return; }
+  if (!ko) { showToast('한글 뜻을 입력해주세요'); return; }
+
+  if (words.find(w => w.en.toLowerCase() === en.toLowerCase())) {
+    showToast('이미 있는 단어예요');
+    return;
+  }
+
+  words.push({ en, ko, isNew: true });
+  saveWords();
+  renderWordList();
+
+  document.getElementById('manualEn').value = '';
+  document.getElementById('manualKo').value = '';
+  badge.style.display = 'none';
+  document.getElementById('manualStatus').className = 'status-msg';
+  showToast(`✅ "${en}" 추가됐어요`);
 }
 
-function download() {
-  if(!words.length) { alert('먼저 단어를 추가해 주세요!'); return; }
-  const html = buildHTML(words);
+// ─── Image Handling ───────────────────────────────────────────
+async function handleImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  event.target.value = '';
+
+  // preview
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('previewImg').src = e.target.result;
+    document.getElementById('previewWrap').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+
+  if (!getApiKey()) {
+    showStatus('extractStatus', 'error', '❌ API 키를 먼저 저장해주세요');
+    return;
+  }
+
+  showStatus('extractStatus', 'info', '🔍 AI가 단어를 추출하고 있어요...');
+  document.getElementById('extractResult').style.display = 'none';
+
+  try {
+    const base64 = await fileToBase64(file);
+    const mimeType = file.type || 'image/jpeg';
+
+    const text = await callClaude([{
+      role: 'user',
+      content: [
+        {
+          type: 'image',
+          source: { type: 'base64', media_type: mimeType, data: base64 }
+        },
+        {
+          type: 'text',
+          text: `이 숙제 프린트에서 영어 단어와 한글 뜻을 추출해줘.
+출력 형식: 한 줄에 하나씩, "영어단어:한글뜻" 형태로만. 다른 설명 없이.
+예시:
+apple:사과
+run:달리다
+happy:행복한`
+        }
+      ]
+    }],
+    '너는 숙제 프린트에서 영어 단어를 추출하는 도우미야.',
+    1024);
+
+    const pairs = parseWordPairs(text);
+    if (pairs.length === 0) {
+      showStatus('extractStatus', 'error', '단어를 찾지 못했어요. 사진을 더 밝고 똑바르게 찍어주세요.');
+      return;
+    }
+
+    extractedWords = pairs;
+    renderExtractedChips(pairs);
+    showStatus('extractStatus', 'success', `✅ ${pairs.length}개 단어를 찾았어요!`);
+    document.getElementById('extractResult').style.display = 'block';
+
+  } catch(err) {
+    showStatus('extractStatus', 'error', '❌ ' + err.message);
+  }
+}
+
+function parseWordPairs(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const pairs = [];
+  for (const line of lines) {
+    const parts = line.split(':');
+    if (parts.length >= 2) {
+      const en = parts[0].trim().replace(/^[-•*\d.]+\s*/, '');
+      const ko = parts.slice(1).join(':').trim();
+      if (en && ko && en.length < 50) {
+        pairs.push({ en, ko });
+      }
+    }
+  }
+  return pairs;
+}
+
+function renderExtractedChips(pairs) {
+  const wrap = document.getElementById('extractedChips');
+  wrap.innerHTML = pairs.map((p, i) => `
+    <div class="word-chip" id="chip-${i}">
+      <span class="en">${escHtml(p.en)}</span>
+      <span class="sep">→</span>
+      <span class="ko">${escHtml(p.ko)}</span>
+      <button class="chip-del" onclick="removeChip(${i})" title="제거">×</button>
+    </div>
+  `).join('');
+}
+
+function removeChip(i) {
+  extractedWords.splice(i, 1);
+  renderExtractedChips(extractedWords);
+  if (extractedWords.length === 0) {
+    document.getElementById('extractResult').style.display = 'none';
+    showStatus('extractStatus', 'info', '모든 단어를 제거했어요');
+  }
+}
+
+function addAllExtracted() {
+  let added = 0;
+  for (const w of extractedWords) {
+    if (!words.find(x => x.en.toLowerCase() === w.en.toLowerCase())) {
+      words.push({ en: w.en, ko: w.ko, isNew: true });
+      added++;
+    }
+  }
+  saveWords();
+  renderWordList();
+  document.getElementById('extractResult').style.display = 'none';
+  document.getElementById('previewWrap').style.display = 'none';
+  extractedWords = [];
+  showStatus('extractStatus', 'success', `✅ ${added}개 단어를 추가했어요!`);
+  showToast(`✅ ${added}개 단어 추가 완료!`);
+}
+
+// ─── Word List ────────────────────────────────────────────────
+function renderWordList() {
+  const wrap = document.getElementById('wordListWrap');
+  document.getElementById('wordCount').textContent = words.length;
+
+  if (words.length === 0) {
+    wrap.innerHTML = '<div class="empty-state">아직 단어가 없어요<br>위에서 추가해보세요 😊</div>';
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table class="word-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>영어</th>
+          <th>한글 뜻</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${words.map((w, i) => `
+          <tr>
+            <td style="color:var(--sub);font-size:12px">${i+1}</td>
+            <td class="en-col">${escHtml(w.en)}${w.isNew ? '<span class="new-badge">NEW</span>' : ''}</td>
+            <td>${escHtml(w.ko)}</td>
+            <td><button class="del-btn" onclick="deleteWord(${i})">×</button></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function deleteWord(i) {
+  const w = words.splice(i, 1)[0];
+  saveWords();
+  renderWordList();
+  showToast(`🗑️ "${w.en}" 삭제됨`);
+}
+
+function clearAll() {
+  if (!confirm(`단어 ${words.length}개를 모두 삭제할까요?`)) return;
+  words = [];
+  saveWords();
+  renderWordList();
+  showToast('🗑️ 전체 삭제됨');
+}
+
+function saveWords() {
+  localStorage.setItem('flashcard_words', JSON.stringify(words));
+  // 저장 후 new 뱃지 제거는 하지 않음 (새로 추가된 것 표시 유지)
+}
+
+// ─── Download child file ──────────────────────────────────────
+function downloadChildFile() {
+  if (words.length === 0) {
+    showToast('⚠️ 단어를 먼저 추가해주세요');
+    return;
+  }
+  const html = generateChildHtml(words);
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = '영어_플래시카드.html'; a.click();
+  a.href = url;
+  a.download = '영어_플래시카드.html';
+  a.click();
   URL.revokeObjectURL(url);
+  showToast('⬇️ 다운로드 완료! AirDrop으로 아이 아이폰에 전송하세요');
 }
 
-function buildHTML(words) {
-  const json = JSON.stringify(words);
+function generateChildHtml(wordList) {
+  const wordsJson = JSON.stringify(wordList);
   return `<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="영어단어장">
-<title>영어 단어장</title>
+<meta name="apple-mobile-web-app-title" content="단어장">
+<title>영어 플래시카드</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nunito:wght@700;800;900&display=swap');
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#F5F2ED;--surface:#FFF;--border:#E2DDD6;--text:#1C1917;--text2:#78716C;--text3:#A8A29E;--accent:#4A6FA5;--green:#2D7A5F;--green-bg:#E8F5EF;--red:#B91C1C;--red-bg:#FEF2F2;--r:16px;}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);height:100vh;height:-webkit-fill-available;overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none;}
-.screen{display:none;height:100vh;height:-webkit-fill-available;flex-direction:column;}
-.screen.active{display:flex;}
-.header{padding:14px 18px 12px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;}
-.back{font-size:26px;color:var(--accent);cursor:pointer;line-height:1;padding-right:4px;}
-.h-title{font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;}
-.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px;}
-.hero{text-align:center;padding:28px 0 20px;}
-.hero-emoji{font-size:60px;display:block;margin-bottom:10px;}
-.hero-name{font-family:'Nunito',sans-serif;font-size:24px;font-weight:900;margin-bottom:4px;}
-.hero-sub{font-size:13px;color:var(--text2);}
-.word-pill{display:inline-block;margin-top:10px;background:var(--accent);color:#fff;border-radius:999px;font-size:13px;font-weight:700;padding:5px 18px;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
-.mc{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:18px 12px;text-align:center;cursor:pointer;transition:all 0.15s;}
-.mc:active{transform:scale(0.94);background:var(--bg);}
-.mc .e{font-size:36px;margin-bottom:8px;}
-.mc .n{font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;margin-bottom:3px;}
-.mc .d{font-size:11px;color:var(--text2);line-height:1.4;}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:12px 20px;border-radius:11px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;font-weight:500;cursor:pointer;transition:all 0.15s;}
-.btn:active{transform:scale(0.95);}
-.bp{background:var(--accent);color:#fff;border-color:var(--accent);}
-.bs{padding:9px 16px;font-size:13px;border-radius:9px;}
-.prog-wrap{background:var(--border);border-radius:999px;height:6px;overflow:hidden;margin-bottom:6px;}
-.prog-bar{height:100%;border-radius:999px;background:var(--accent);transition:width 0.4s;}
-.prog-txt{font-size:12px;color:var(--text3);text-align:center;margin-bottom:16px;}
-.card-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.persp{perspective:1100px;margin-bottom:20px;cursor:pointer;}
-.fc{width:100%;min-height:210px;position:relative;transform-style:preserve-3d;transition:transform 0.5s cubic-bezier(.4,.2,.2,1);}
-.fc.flip{transform:rotateY(180deg);}
-.face{position:absolute;inset:0;min-height:210px;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
-.face-b{transform:rotateY(180deg);}
-.f-lbl{font-size:11px;color:var(--text3);letter-spacing:.5px;margin-bottom:14px;text-transform:uppercase;}
-.f-word{font-family:'Nunito',sans-serif;font-size:30px;font-weight:900;text-align:center;line-height:1.2;}
-.f-tap{font-size:11px;color:var(--border);margin-top:18px;}
-.tts-row{display:flex;justify-content:center;margin-top:4px;}
-.sp-ko{font-size:24px;font-weight:700;text-align:center;margin:16px 0 4px;}
-.sp-hint{font-size:13px;color:var(--text2);text-align:center;margin-bottom:18px;}
-.boxes{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
-.box{width:36px;height:46px;border-bottom:2.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;transition:all .2s;}
-.box.ok{border-color:var(--green);color:var(--green);}
-.box.err{border-color:var(--red);color:var(--red);animation:shk .3s;}
-@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-.kb{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;}
-.key{width:34px;height:38px;border:1.5px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;background:var(--surface);color:var(--text);transition:all .1s;}
-.key:active{transform:scale(0.86);}
-.key.used{opacity:.2;pointer-events:none;}
-.kw{width:auto;padding:0 11px;}
-.q-lbl{font-size:13px;color:var(--text2);text-align:center;margin-bottom:6px;}
-.q-word{font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;text-align:center;margin-bottom:20px;}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.ch{padding:15px 8px;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;font-size:14px;font-weight:500;text-align:center;background:var(--surface);transition:all .15s;line-height:1.4;}
-.ch:active{transform:scale(0.95);}
-.ch.ok{background:var(--green-bg);border-color:var(--green);color:var(--green);}
-.ch.err{background:var(--red-bg);border-color:var(--red);color:var(--red);}
-.result{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;text-align:center;}
-.r-em{font-size:68px;margin-bottom:12px;}
-.r-score{font-family:'Nunito',sans-serif;font-size:52px;font-weight:900;}
-.r-pct{font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;margin:6px 0;}
-.r-msg{font-size:16px;color:var(--text2);margin-bottom:24px;}
-.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+:root{--bg:#faf9f6;--card:#fff;--border:#e8e5db;--text:#1a1917;--sub:#777;--accent:#2563eb;--green:#16a34a;--red:#dc2626}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+header{background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10}
+header h1{font-size:16px;font-weight:700}
+.tabs{display:flex;background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto}
+.tab{flex:1;padding:12px 4px;text-align:center;font-size:12px;font-weight:600;color:var(--sub);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;min-width:70px}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.panel{display:none;padding:16px;max-width:500px;margin:0 auto}
+.panel.active{display:block}
+
+/* Flashcard */
+.card-wrap{perspective:1000px;height:220px;margin:12px 0;cursor:pointer}
+.card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s}
+.card.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;background:var(--card);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px;backface-visibility:hidden}
+.card-face.back{transform:rotateY(180deg)}
+.card-word{font-size:32px;font-weight:700;letter-spacing:-1px}
+.card-meaning{font-size:20px;color:var(--sub)}
+.card-hint{font-size:12px;color:#bbb;position:absolute;bottom:14px}
+.card-audio{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;margin-top:8px}
+.nav-row{display:flex;gap:10px;align-items:center;justify-content:center;margin:8px 0}
+.nav-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer}
+.progress{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);transition:width .3s}
+.card-counter{font-size:12px;color:var(--sub);text-align:center;margin-bottom:4px}
+.mode-toggle{display:flex;gap:8px;margin-bottom:12px}
+.mode-btn{flex:1;padding:8px;font-size:13px;font-weight:600;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;color:var(--sub)}
+.mode-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Spelling */
+.spell-prompt{font-size:26px;font-weight:700;text-align:center;margin:20px 0 8px}
+.spell-hint{font-size:13px;color:var(--sub);text-align:center;margin-bottom:16px}
+.spell-input{width:100%;padding:12px;font-size:18px;text-align:center;letter-spacing:4px;border:2px solid var(--border);border-radius:10px;font-family:monospace;outline:none}
+.spell-input:focus{border-color:var(--accent)}
+.spell-input.correct{border-color:var(--green);background:#f0fdf4}
+.spell-input.wrong{border-color:var(--red);background:#fef2f2;animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.spell-feedback{text-align:center;font-size:14px;font-weight:600;min-height:24px;margin:8px 0}
+.check-btn{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px}
+.next-btn{width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;display:none}
+
+/* Quiz */
+.quiz-q{font-size:22px;font-weight:700;text-align:center;margin:16px 0 20px;line-height:1.3}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quiz-opt{padding:14px 10px;background:var(--card);border:2px solid var(--border);border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+.quiz-opt:active{transform:scale(.97)}
+.quiz-opt.correct{background:#f0fdf4;border-color:var(--green);color:var(--green)}
+.quiz-opt.wrong{background:#fef2f2;border-color:var(--red);color:var(--red)}
+.quiz-score{font-size:13px;color:var(--sub);text-align:center;margin-bottom:12px}
+.quiz-next{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;display:none}
+
+/* Stats */
+.stat-row{display:flex;justify-content:space-around;margin:16px 0;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.stat{text-align:center}
+.stat-num{font-size:28px;font-weight:700;color:var(--accent)}
+.stat-label{font-size:11px;color:var(--sub);margin-top:2px}
 </style>
 </head>
 <body>
-<div id="home" class="screen active">
-  <div class="scroll">
-    <div class="hero">
-      <span class="hero-emoji">📚</span>
-      <div class="hero-name">내 영어 단어장</div>
-      <div class="hero-sub">학원 숙제 단어를 재미있게 외워요!</div>
-      <div class="word-pill">${words.length}개 단어</div>
-    </div>
-    <div class="grid">
-      <div class="mc" onclick="go('flash_en')"><div class="e">🃏</div><div class="n">영 → 한</div><div class="d">영어 보고 뜻 맞추기</div></div>
-      <div class="mc" onclick="go('flash_ko')"><div class="e">💬</div><div class="n">한 → 영</div><div class="d">뜻 보고 영어 맞추기</div></div>
-      <div class="mc" onclick="go('spell')"><div class="e">✏️</div><div class="n">철자 맞추기</div><div class="d">알파벳 눌러서 맞추기</div></div>
-      <div class="mc" onclick="go('quiz')"><div class="e">🎯</div><div class="n">퀴즈</div><div class="d">4지선다 문제 풀기</div></div>
-    </div>
-  </div>
+<header>
+  <span style="font-size:20px">📖</span>
+  <h1>영어 플래시카드</h1>
+  <span style="margin-left:auto;font-size:12px;color:var(--sub)">${wordList.length}개 단어</span>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('flash')">📋 카드</button>
+  <button class="tab" onclick="showTab('spell')">✏️ 철자</button>
+  <button class="tab" onclick="showTab('quiz')">🎯 퀴즈</button>
 </div>
-<div id="study" class="screen">
-  <div class="header">
-    <span class="back" onclick="goHome()">&#x2039;</span>
-    <span class="h-title" id="hTitle"></span>
-  </div>
-  <div class="scroll" id="content"></div>
-</div>
+
+<div id="flash" class="panel active"></div>
+<div id="spell" class="panel"></div>
+<div id="quiz" class="panel"></div>
+
 <script>
-const W=${json};
-let ws,mode,idx,score,total,si,qa;
-function sh(a){return a.sort(()=>Math.random()-.5);}
-function goHome(){document.getElementById('home').classList.add('active');document.getElementById('study').classList.remove('active');}
-function go(m){
-  mode=m;ws=sh([...W]);idx=0;score=0;total=0;si=[];qa=false;
-  const t={flash_en:'영 → 한',flash_ko:'한 → 영',spell:'철자 맞추기',quiz:'퀴즈'};
-  document.getElementById('hTitle').textContent=t[m];
-  document.getElementById('home').classList.remove('active');
-  document.getElementById('study').classList.add('active');
-  render();
+const WORDS = ${wordsJson};
+let flashIdx = 0, flashMode = 'en-ko';
+let spellIdx = 0, spellScore = 0, spellTotal = 0;
+let quizIdx = 0, quizScore = 0;
+let shuffledFlash, shuffledSpell, shuffledQuiz;
+
+function shuffle(arr) {
+  const a = [...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;
 }
-function render(){
-  const el=document.getElementById('content');
-  if(mode==='flash_en'||mode==='flash_ko')rFlash(el);
-  else if(mode==='spell')rSpell(el);
-  else rQuiz(el);
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active', ['flash','spell','quiz'][i]===name)
+  });
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  if(name==='flash' && !shuffledFlash) initFlash();
+  if(name==='spell' && !shuffledSpell) initSpell();
+  if(name==='quiz' && !shuffledQuiz) initQuiz();
 }
-function ph(cur,tot){const p=Math.round(cur/tot*100);return \`<div class="prog-wrap"><div class="prog-bar" style="width:\${p}%"></div></div><div class="prog-txt">\${cur}/\${tot}</div>\`;}
-function rFlash(el){
-  if(idx>=ws.length){rResult(el,true);return;}
-  const w=ws[idx],en=mode==='flash_en';
-  el.innerHTML=ph(idx+1,ws.length)+\`
-  <div class="card-nav">
-    <button class="btn bs" onclick="if(idx>0){idx--;si=[];render();}" \${idx===0?'disabled':''}>← 이전</button>
-    <button class="btn bs bp" onclick="idx++;si=[];render()">다음 →</button>
-  </div>
-  <div class="persp" onclick="document.getElementById('fc').classList.toggle('flip')">
-    <div class="fc" id="fc">
-      <div class="face"><div class="f-lbl">\${en?'English':'한국어'}</div><div class="f-word">\${en?w.en:w.ko}</div><div class="f-tap">탭해서 뒤집기 ↩</div></div>
-      <div class="face face-b"><div class="f-lbl">\${en?'뜻':'English'}</div><div class="f-word">\${en?w.ko:w.en}</div></div>
+
+// ── Flash ──
+function initFlash() {
+  shuffledFlash = shuffle(WORDS); flashIdx = 0;
+  renderFlash();
+}
+
+function renderFlash() {
+  const w = shuffledFlash[flashIdx];
+  const isFront = flashMode === 'en-ko';
+  const front = isFront ? w.en : w.ko;
+  const back = isFront ? w.ko : w.en;
+  document.getElementById('flash').innerHTML = \`
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num">\${WORDS.length}</div><div class="stat-label">전체</div></div>
+      <div class="stat"><div class="stat-num">\${flashIdx+1}</div><div class="stat-label">현재</div></div>
     </div>
-  </div>
-  <div class="tts-row"><button class="btn bs" onclick="sp('\${w.en}')">🔊 발음 듣기</button></div>\`;}
-function rSpell(el){
-  if(idx>=ws.length){rResult(el,false);return;}
-  const w=ws[idx],lt=w.en.toLowerCase().split('');
-  const uc={};si.forEach(c=>{uc[c]=(uc[c]||0)+1;});
-  const nd={};lt.forEach(c=>{nd[c]=(nd[c]||0)+1;});
-  const boxes=lt.map((l,i)=>\`<div class="box" id="bx\${i}">\${si[i]||''}</div>\`).join('');
-  const keys='abcdefghijklmnopqrstuvwxyz'.split('').map(c=>\`<div class="key \${(uc[c]||0)>=(nd[c]||0)?'used':''}" onclick="ktype('\${c}')">\${c}</div>\`).join('');
-  el.innerHTML=ph(idx,ws.length)+\`
-  <div class="sp-ko">\${w.ko}</div>
-  <div class="sp-hint">영어로 철자를 맞춰보세요 (\${w.en.length}글자)</div>
-  <div class="boxes">\${boxes}</div>
-  <div class="kb">\${keys}<div class="key kw" onclick="si.pop();render()">⌫</div><div class="key kw" onclick="chkSpell()" style="background:var(--accent);color:#fff;border-color:var(--accent);">확인</div></div>
-  <div class="tts-row" style="margin-top:14px;"><button class="btn bs" onclick="sp('\${w.en}')">🔊 힌트</button></div>\`;}
-function ktype(c){const w=ws[idx];if(si.length<w.en.length){si.push(c);render();}}
-function chkSpell(){
-  const w=ws[idx];if(si.length<w.en.length)return;
-  const ok=si.join('')===w.en.toLowerCase();
-  w.en.split('').forEach((l,i)=>{const b=document.getElementById('bx'+i);if(b)b.classList.add(si[i]===l.toLowerCase()?'ok':'err');});
-  if(ok)score++;total++;
-  setTimeout(()=>{idx++;si=[];render();},ok?700:1300);
+    <div class="mode-toggle">
+      <button class="mode-btn \${flashMode==='en-ko'?'active':''}" onclick="setFlashMode('en-ko')">영→한</button>
+      <button class="mode-btn \${flashMode==='ko-en'?'active':''}" onclick="setFlashMode('ko-en')">한→영</button>
+    </div>
+    <div class="card-counter">\${flashIdx+1} / \${shuffledFlash.length}</div>
+    <div class="progress"><div class="progress-fill" style="width:\${(flashIdx+1)/shuffledFlash.length*100}%"></div></div>
+    <div class="card-wrap" onclick="this.querySelector('.card').classList.toggle('flipped')">
+      <div class="card">
+        <div class="card-face front">
+          <div class="card-word">\${front}</div>
+          <button class="card-audio" onclick="event.stopPropagation();speak('\${w.en}')">🔊 발음</button>
+          <div class="card-hint">탭해서 뒤집기</div>
+        </div>
+        <div class="card-face back">
+          <div class="card-word" style="font-size:26px">\${back}</div>
+          <div class="card-hint">탭해서 다시 보기</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="flashNav(-1)">◀ 이전</button>
+      <button class="nav-btn" onclick="initFlash()">🔀 섞기</button>
+      <button class="nav-btn" onclick="flashNav(1)">다음 ▶</button>
+    </div>
+  \`;
 }
-function rQuiz(el){
-  if(total>=ws.length){rResult(el,false);return;}
-  const w=ws[total%ws.length],en=Math.random()>.5;
-  const q=en?w.en:w.ko,ans=en?w.ko:w.en;
-  const wr=ws.filter(x=>x.en!==w.en).sort(()=>Math.random()-.5).slice(0,3);
-  const ch=sh([{t:ans,ok:true},...wr.map(x=>({t:en?x.ko:x.en,ok:false}))]);
-  qa=false;
-  el.innerHTML=ph(total,ws.length)+\`
-  <div class="q-lbl">\${en?'영어 단어의 뜻은?':'한국어에 맞는 영어 단어는?'}</div>
-  <div class="q-word">\${q}</div>
-  <div class="choices">\${ch.map((c,i)=>\`<div class="ch" id="ch\${i}" onclick="ans_(\${i},\${c.ok})">\${c.t}</div>\`).join('')}</div>
-  <div class="tts-row" style="margin-top:14px;"><button class="btn bs" onclick="sp('\${w.en}')">🔊 발음</button></div>\`;}
-function ans_(i,ok){if(qa)return;qa=true;document.getElementById('ch'+i).classList.add(ok?'ok':'err');if(ok)score++;total++;setTimeout(()=>render(),900);}
-function rResult(el,isFlash){
-  const tot=ws.length,p=Math.round(score/tot*100);
-  let em='📝',msg='조금 더 연습해 봐요! 💪';
-  if(p===100){em='🏆';msg='완벽해요! 대단해! 🎉';}
-  else if(p>=80){em='⭐';msg='정말 잘했어요! 👍';}
-  else if(p>=60){em='😊';msg='잘하고 있어요!';}
-  el.innerHTML=\`<div class="result">
-  <div class="r-em">\${isFlash?'🎉':em}</div>
-  \${isFlash?'<div class="r-msg" style="font-size:19px;font-weight:700;">모든 카드를 다 봤어요!</div>':\`<div class="r-score">\${score}/\${tot}</div><div class="r-pct" style="color:\${p>=80?'var(--green)':p>=60?'#B45309':'var(--red)'}">\${p}점</div><div class="r-msg">\${msg}</div>\`}
-  <div class="btn-row">
-    <button class="btn bp" onclick="idx=0;score=0;total=0;si=[];ws=sh([...W]);render()">다시 하기</button>
-    <button class="btn" onclick="goHome()">홈으로</button>
-  </div></div>\`;}
-function sp(t){if('speechSynthesis' in window){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u);}}
+
+function flashNav(dir) {
+  flashIdx = (flashIdx + dir + shuffledFlash.length) % shuffledFlash.length;
+  renderFlash();
+}
+
+function setFlashMode(mode) {
+  flashMode = mode;
+  renderFlash();
+}
+
+// ── Spell ──
+function initSpell() {
+  shuffledSpell = shuffle(WORDS); spellIdx = 0; spellScore = 0; spellTotal = 0;
+  renderSpell();
+}
+
+function renderSpell() {
+  const w = shuffledSpell[spellIdx];
+  document.getElementById('spell').innerHTML = \`
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num">\${spellScore}</div><div class="stat-label">정답</div></div>
+      <div class="stat"><div class="stat-num">\${spellTotal}</div><div class="stat-label">시도</div></div>
+      <div class="stat"><div class="stat-num">\${spellIdx+1}/\${shuffledSpell.length}</div><div class="stat-label">진행</div></div>
+    </div>
+    <div class="spell-prompt">\${w.ko}</div>
+    <div class="spell-hint">위 뜻에 해당하는 영어 단어를 입력하세요</div>
+    <input class="spell-input" id="spellInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="영어로 입력..."
+      onkeydown="if(event.key==='Enter')checkSpell()">
+    <div class="spell-feedback" id="spellFb"></div>
+    <button class="check-btn" id="checkBtn" onclick="checkSpell()">확인</button>
+    <button class="next-btn" id="nextBtn" onclick="nextSpell()">다음 단어 ▶</button>
+  \`;
+  document.getElementById('spellInput').focus();
+}
+
+function checkSpell() {
+  const inp = document.getElementById('spellInput');
+  const fb = document.getElementById('spellFb');
+  const w = shuffledSpell[spellIdx];
+  const ans = inp.value.trim().toLowerCase();
+  const correct = w.en.toLowerCase();
+
+  spellTotal++;
+  document.getElementById('checkBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'block';
+
+  if(ans === correct) {
+    spellScore++;
+    inp.classList.add('correct');
+    fb.innerHTML = '<span style="color:var(--green)">🎉 정답!</span>';
+    speak(w.en);
+  } else {
+    inp.classList.add('wrong');
+    fb.innerHTML = \`<span style="color:var(--red)">❌ 정답: \${w.en}</span>\`;
+  }
+}
+
+function nextSpell() {
+  spellIdx = (spellIdx + 1) % shuffledSpell.length;
+  renderSpell();
+}
+
+// ── Quiz ──
+function initQuiz() {
+  shuffledQuiz = shuffle(WORDS); quizIdx = 0; quizScore = 0;
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const w = shuffledQuiz[quizIdx];
+  const others = WORDS.filter(x=>x.en!==w.en);
+  const opts = shuffle([w, ...shuffle(others).slice(0,3)]);
+  const isEnKo = Math.random() > 0.5;
+  const question = isEnKo ? w.en : w.ko;
+  const correctAns = isEnKo ? w.ko : w.en;
+
+  document.getElementById('quiz').innerHTML = \`
+    <div class="quiz-score">점수: \${quizScore} / \${quizIdx} | \${quizIdx+1}/\${shuffledQuiz.length}</div>
+    <div class="quiz-q">\${question}</div>
+    <div class="quiz-opts">
+      \${opts.map(o => {
+        const label = isEnKo ? o.ko : o.en;
+        const isCorrect = isEnKo ? o.ko===w.ko : o.en===w.en;
+        return \`<button class="quiz-opt" onclick="pickQuiz(this,\${isCorrect},'\${w.en}')">\${label}</button>\`;
+      }).join('')}
+    </div>
+    <button class="quiz-next" id="quizNext" onclick="nextQuiz()">다음 문제 ▶</button>
+  \`;
+}
+
+function pickQuiz(btn, isCorrect, en) {
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.onclick=null);
+  if(isCorrect) {
+    btn.classList.add('correct');
+    quizScore++;
+    speak(en);
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.quiz-opt').forEach(b=>{
+      if(b.textContent === (document.querySelector('.quiz-q').textContent === en
+        ? '' : '')) b.classList.add('correct');
+    });
+  }
+  document.getElementById('quizNext').style.display='block';
+  quizIdx++;
+}
+
+function nextQuiz() {
+  if(quizIdx >= shuffledQuiz.length) {
+    document.getElementById('quiz').innerHTML = \`
+      <div style="text-align:center;padding:40px 16px">
+        <div style="font-size:60px;margin-bottom:16px">🏆</div>
+        <div style="font-size:24px;font-weight:700;margin-bottom:8px">퀴즈 완료!</div>
+        <div style="font-size:18px;color:var(--sub);margin-bottom:24px">\${quizScore} / \${shuffledQuiz.length} 정답</div>
+        <button onclick="initQuiz()" style="background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px 32px;font-size:16px;font-weight:700;cursor:pointer">다시 하기</button>
+      </div>
+    \`;
+  } else {
+    renderQuiz();
+  }
+}
+
+function speak(word) {
+  if(!window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = 'en-US'; u.rate = 0.9;
+  speechSynthesis.speak(u);
+}
+
+initFlash();
 <\/script>
 </body>
 </html>`;
 }
 
-renderList();
+// ─── Helpers ──────────────────────────────────────────────────
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function showStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = 'status-msg ' + type;
+  el.textContent = msg;
+}
 </script>
 </body>
 </html>
