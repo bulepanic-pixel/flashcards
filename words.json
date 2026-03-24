@@ -38,5 +38,10 @@
     "en": "electrical",
     "ko": "전기의",
     "isNew": true
+  },
+  {
+    "en": "load",
+    "ko": "화물",
+    "isNew": true
   }
 ]
