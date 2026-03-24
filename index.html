@@ -588,9 +588,13 @@
         → repo 체크 → Generate token
       </p>
       <div style="margin-top:10px">
-        <input type="text" class="api-input" id="ghRepoInput" placeholder="bulepanic-pixel/flashcards" style="font-family:inherit;font-size:13px;width:100%">
+        <div class="api-row">
+          <input type="text" class="api-input" id="ghRepoInput" placeholder="bulepanic-pixel/flashcards" style="font-family:inherit;font-size:13px">
+          <button class="btn btn-outline btn-sm" onclick="saveGhRepo()">저장</button>
+        </div>
         <p class="api-hint" style="margin-top:4px">저장소 (username/repository 형식)</p>
       </div>
+      <button class="btn btn-outline btn-sm" style="margin-top:8px;width:100%;justify-content:center" onclick="manualLoadWords()">☁️ 단어장 다시 불러오기</button>
       <div id="ghSettingStatus" class="status-msg"></div>
     </div>
   </div>
@@ -1009,8 +1013,16 @@ function saveGhRepo() {
   const token = localStorage.getItem('gh_token');
   if (!repo) return;
   localStorage.setItem('gh_repo', repo);
-  loadWordsFromGitHub(repo, token);
   showToast('✅ 저장소 저장됨 — 단어장 불러오는 중...');
+  loadWordsFromGitHub(repo, token);
+}
+
+function manualLoadWords() {
+  const token = localStorage.getItem('gh_token') || document.getElementById('ghTokenInput').value.trim();
+  const repo = localStorage.getItem('gh_repo') || document.getElementById('ghRepoInput').value.trim();
+  if (!token) { showToast('⚠️ GitHub 토큰을 먼저 저장해주세요'); return; }
+  if (!repo) { showToast('⚠️ 저장소를 먼저 저장해주세요'); return; }
+  loadWordsFromGitHub(repo, token);
 }
 
 async function deployToGitHub() {
