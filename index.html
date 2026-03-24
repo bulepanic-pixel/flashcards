@@ -999,6 +999,9 @@ function saveGhToken() {
   localStorage.setItem('gh_token', token);
   document.getElementById('ghStatus').textContent = '저장됨 ✓';
   showToast('✅ GitHub 토큰 저장됨');
+  // 토큰 저장 시 저장소가 이미 있으면 바로 단어 불러오기
+  const repo = localStorage.getItem('gh_repo');
+  if (repo) loadWordsFromGitHub(repo, token);
 }
 
 function saveGhRepo() {
