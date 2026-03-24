@@ -23,5 +23,10 @@
     "en": "as well as",
     "ko": "~ 뿐만 아니라 ~도",
     "isNew": true
+  },
+  {
+    "en": "contain",
+    "ko": "~을 함유하다, ~이 들어있다.",
+    "isNew": true
   }
 ]
