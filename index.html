@@ -663,7 +663,7 @@ async function callClaude(messages, systemPrompt, maxTokens = 1024) {
   return textBlock.text;
 }
 
-// ─── Auto Translate ───────────────────────────────────────────
+// ─── Auto Translate (무료 MyMemory API — 크레딧 불필요) ──────
 async function autoTranslate() {
   const enInput = document.getElementById('manualEn');
   const koInput = document.getElementById('manualKo');
@@ -671,9 +671,8 @@ async function autoTranslate() {
   const status = document.getElementById('manualStatus');
 
   const word = enInput.value.trim();
-  if (!word || koInput.value.trim()) return; // 이미 뜻이 있으면 skip
+  if (!word || koInput.value.trim()) return;
   if (isTranslating) return;
-  if (!getApiKey()) return;
 
   isTranslating = true;
   koInput.classList.add('loading');
@@ -681,22 +680,22 @@ async function autoTranslate() {
   status.className = 'status-msg';
 
   try {
-    const text = await callClaude(
-      [{ role: 'user', content: `영어 단어: "${word}"` }],
-      `너는 영한 사전이야. 영어 단어를 받으면 초등학생이 이해할 수 있는 대표적인 한글 뜻만 짧게 답해.
-형식: 한글 뜻만 (예: "사과", "달리다", "행복한")
-뜻이 여러 개면 쉼표로 구분해서 최대 3개까지.
-다른 설명은 절대 추가하지 마.`,
-      100
+    const res = await fetch(
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|ko`
     );
+    const data = await res.json();
 
-    const translation = text.trim().replace(/^["']|["']$/g, '');
+    if (data.responseStatus !== 200) throw new Error('번역 실패');
+
+    const translation = data.responseData.translatedText.trim();
+    if (!translation) throw new Error('번역 결과 없음');
+
     koInput.value = translation;
     badge.style.display = 'block';
     status.className = 'status-msg';
 
   } catch (err) {
-    showStatus('manualStatus', 'error', '❌ ' + err.message);
+    showStatus('manualStatus', 'error', '❌ 번역 실패 — 직접 입력해주세요');
   } finally {
     isTranslating = false;
     koInput.classList.remove('loading');
