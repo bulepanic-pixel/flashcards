@@ -13,5 +13,10 @@
     "en": "Barge",
     "ko": "바지선",
     "isNew": true
+  },
+  {
+    "en": "reef",
+    "ko": "암초",
+    "isNew": true
   }
 ]
