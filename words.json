@@ -58,5 +58,10 @@
     "en": "title role",
     "ko": "주인공 역",
     "isNew": true
+  },
+  {
+    "en": "weapon",
+    "ko": "무기",
+    "isNew": true
   }
 ]
