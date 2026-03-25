@@ -38,5 +38,10 @@
     "en": "horror",
     "ko": "공포",
     "isNew": true
+  },
+  {
+    "en": "punch",
+    "ko": "주먹으로 치다",
+    "isNew": true
   }
 ]
