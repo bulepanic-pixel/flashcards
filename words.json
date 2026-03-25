@@ -63,5 +63,10 @@
     "en": "weapon",
     "ko": "무기",
     "isNew": true
+  },
+  {
+    "en": "yell",
+    "ko": "소리 치다",
+    "isNew": true
   }
 ]
