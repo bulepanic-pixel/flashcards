@@ -68,5 +68,10 @@
     "en": "yell",
     "ko": "소리 치다",
     "isNew": true
+  },
+  {
+    "en": "scary",
+    "ko": "무서운",
+    "isNew": true
   }
 ]
