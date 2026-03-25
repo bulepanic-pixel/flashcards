@@ -28,5 +28,10 @@
     "en": "comedy",
     "ko": "코미디",
     "isNew": true
+  },
+  {
+    "en": "costume",
+    "ko": "의상",
+    "isNew": true
   }
 ]
