@@ -73,5 +73,10 @@
     "en": "scary",
     "ko": "무서운",
     "isNew": true
+  },
+  {
+    "en": "superhero",
+    "ko": "슈퍼히어로",
+    "isNew": true
   }
 ]
