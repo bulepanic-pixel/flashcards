@@ -68,5 +68,10 @@
     "en": "actor",
     "ko": "남자 배우",
     "isNew": true
+  },
+  {
+    "en": "athletic",
+    "ko": "운동을 잘 하는",
+    "isNew": true
   }
 ]
