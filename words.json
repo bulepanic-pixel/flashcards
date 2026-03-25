@@ -78,5 +78,10 @@
     "en": "superhero",
     "ko": "슈퍼히어로",
     "isNew": true
+  },
+  {
+    "en": "alone",
+    "ko": "혼자서",
+    "isNew": true
   }
 ]
