@@ -48,5 +48,10 @@
     "en": "stuntman",
     "ko": "스턴트맨",
     "isNew": true
+  },
+  {
+    "en": "suit",
+    "ko": "정장",
+    "isNew": true
   }
 ]
