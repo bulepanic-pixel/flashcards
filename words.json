@@ -53,5 +53,10 @@
     "en": "suit",
     "ko": "정장",
     "isNew": true
+  },
+  {
+    "en": "title role",
+    "ko": "주인공 역",
+    "isNew": true
   }
 ]
