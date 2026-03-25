@@ -70,7 +70,7 @@ header h1{font-size:16px;font-weight:700}
 <header>
   <span style="font-size:20px">📖</span>
   <h1>영어 플래시카드</h1>
-  <span style="margin-left:auto;font-size:12px;color:var(--sub)">13개 단어</span>
+  <span style="margin-left:auto;font-size:12px;color:var(--sub)">19개 단어</span>
 </header>
 
 <div class="tabs">
@@ -84,7 +84,7 @@ header h1{font-size:16px;font-weight:700}
 <div id="quiz" class="panel"></div>
 
 <script>
-const WORDS = [{"en":"Cranked up","ko":"세계 돌려진","isNew":true},{"en":"Hoist","ko":"승강 장치","isNew":true},{"en":"Barge","ko":"바지선","isNew":true},{"en":"reef","ko":"암초","isNew":true},{"en":"as well as","ko":"~ 뿐만 아니라 ~도","isNew":true},{"en":"contain","ko":"~을 함유하다, ~이 들어있다.","isNew":true},{"en":"Mission accomplished","ko":"임무가 완료되었다","isNew":true},{"en":"electrical","ko":"전기의","isNew":true},{"en":"load","ko":"화물","isNew":true},{"en":"avoid","ko":"피하다","isNew":true},{"en":"Traffic jams","ko":"교통 체증","isNew":true},{"en":"criminal","ko":"범죄자","isNew":true},{"en":"crook","ko":"사기꾼","isNew":true}];
+const WORDS = [{"en":"actor","ko":"남자 배우","isNew":true},{"en":"athletic","ko":"운동을 잘 하는","isNew":true},{"en":"brave","ko":"용감한","isNew":true},{"en":"car crash","ko":"자동차 충돌","isNew":true},{"en":"childish","ko":"유치한","isNew":true},{"en":"comedy","ko":"코미디","isNew":true},{"en":"costume","ko":"의상","isNew":true},{"en":"horror","ko":"공포","isNew":true},{"en":"punch","ko":"주먹으로 치다","isNew":true},{"en":"stuntman","ko":"스턴트맨","isNew":true},{"en":"suit","ko":"정장","isNew":true},{"en":"title role","ko":"주인공 역","isNew":true},{"en":"weapon","ko":"무기","isNew":true},{"en":"yell","ko":"소리 치다","isNew":true},{"en":"scary","ko":"무서운","isNew":true},{"en":"superhero","ko":"슈퍼히어로","isNew":true},{"en":"alone","ko":"혼자서","isNew":true},{"en":"perfect","ko":"완벽한","isNew":true},{"en":"nervous","ko":"불안해하는","isNew":true}];
 let flashIdx = 0, flashMode = 'en-ko';
 let spellIdx = 0, spellScore = 0, spellTotal = 0;
 let quizIdx = 0, quizScore = 0;
