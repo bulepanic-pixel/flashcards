@@ -33,5 +33,10 @@
     "en": "costume",
     "ko": "의상",
     "isNew": true
+  },
+  {
+    "en": "horror",
+    "ko": "공포",
+    "isNew": true
   }
 ]
